@@ -7,4 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'reciprebook';
+  navigatePage : string = '';
+
+  navigateTO(page : string){
+    this.navigatePage = page;
+  }
 }
