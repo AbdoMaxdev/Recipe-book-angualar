@@ -7,10 +7,10 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class HeaderComponent {
 
-  @Output() navigatePage = new EventEmitter<string>();
+  // @Output() navigatePage = new EventEmitter<string>();
 
-  navigateEvent(component : string){
-    this.navigatePage.emit(component)
-  }
+  // navigateEvent(component : string){
+  //   this.navigatePage.emit(component)
+  // }
 
 }
