@@ -17,6 +17,10 @@ export class ShoppingListComponent implements OnInit {
     this.ingredients = this.shoppinglistservice.ingredients
   }
 
+  onEditItem(index :number) {
+    this.shoppinglistservice.selectedIngredient.next(index)
+  }
+
   
 
 }

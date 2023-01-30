@@ -1,8 +1,7 @@
-import { 
-  ViewChild, 
-  Component, 
-  Output,
-  ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
+
 import { ShoppingListService } from 'src/app/services/shopping-list.service';
 import { Ingredient } from 'src/app/shared/ingredient.model';
 
@@ -11,17 +10,48 @@ import { Ingredient } from 'src/app/shared/ingredient.model';
   templateUrl: './shopping-edit.component.html',
   styleUrls: ['./shopping-edit.component.css']
 })
-export class ShoppingEditComponent {
+export class ShoppingEditComponent implements OnInit {
 
-  @ViewChild('nameInput') nameElement : ElementRef;
+  @ViewChild('f') slForm : NgForm; 
+  subscription : Subscription;
+  editMode : boolean = false;
+  IdEditItem : number;
+  itemEdit : Ingredient;
 
   constructor(private shoppinglistservice: ShoppingListService) {}
 
-  addIngredient(amount){
-    const ingName = this.nameElement.nativeElement.value;
-    const ingAmount = amount.value
-    let ingredient = new Ingredient(ingName, ingAmount)
-    this.shoppinglistservice.addIngredienTolist(ingredient);
+  ngOnInit(): void {
+    this.subscription = this.shoppinglistservice.selectedIngredient
+    .subscribe((index : number)=>{
+      this.IdEditItem = index;
+      this.editMode = true;
+      this.itemEdit = this.shoppinglistservice.getIngredient(index)
+      this.slForm.setValue({
+        name : this.itemEdit.name,
+        amount : this.itemEdit.amount
+      })
+    })
+  }
+
+  OnClear() {
+    this.slForm.reset();
+    this.editMode = false;
+  }
+
+  deleteSlItem() {
+    this.shoppinglistservice.deleteIngredient(this.IdEditItem)
+    this.OnClear()
+  }
+
+  addIngredient(form ){
+    let ingredient = new Ingredient(form.value.name, form.value.amount)
+    if(this.editMode){
+      this.shoppinglistservice.editIngredient(this.IdEditItem,ingredient)
+    }else{
+      this.shoppinglistservice.addIngredienTolist(ingredient);
+    }
+    this.editMode = false
+    form.reset();
   }
 
 }
